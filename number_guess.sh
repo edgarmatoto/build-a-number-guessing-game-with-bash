@@ -61,10 +61,14 @@ BEST_GAME=$($PSQL "SELECT best_game FROM users WHERE username='$USERNAME'")
 NEW_GAMES_PLAYED=$((1 + $GAMES_PLAYED))
 
 
-if [[ $NUM_OF_GUESS < $BEST_GAME ]]
+if [[ $BEST_GAME == 0 ]]
 then
-  BEST_GAME=$NUM_OF_GUESS
+  UPDATE_BEST_GAME=$($PSQL "UPDATE users SET best_game=$NUM_OF_GUESS WHERE username='$USERNAME'")
+fi
+
+if [[ $BEST_GAME > $NUM_OF_GUESS ]]
+then
+  UPDATE_BEST_GAME=$($PSQL "UPDATE users SET best_game=$NUM_OF_GUESS WHERE username='$USERNAME'")
 fi
 
 UPDATE_GAMES_PLAYED=$($PSQL "UPDATE users SET games_played=$NEW_GAMES_PLAYED WHERE username='$USERNAME'")
-UPDATE_BEST_GAME=$($PSQL "UPDATE users SET best_game=$BEST_GAME WHERE username='$USERNAME'")
